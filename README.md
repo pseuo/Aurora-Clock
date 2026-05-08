@@ -1,8 +1,6 @@
 # Aurora Clock｜极光时钟
 
-一个基于 React 和 Vite 构建实时数字时钟
-
-项目以大字号时间展示为核心，结合玻璃拟态卡片、动态边框高光、鼠标聚光交互、WebGL Aurora 极光背景、世界时钟、天气氛围和 PWA 能力，适合作为桌面时钟、全屏展示页或可安装的轻量时钟应用。
+一个基于 React 和 Vite 构建的 Apple glass 风格实时数字时钟。项目以大字号时间展示为核心，结合玻璃拟态卡片、动态边框高光、鼠标聚光交互、WebGL Aurora 极光背景、世界时钟、天气氛围和 PWA 能力，适合作为桌面时钟、全屏展示页或可安装的轻量时钟应用。
 
 ## Features
 
@@ -90,6 +88,43 @@ npm.cmd run lint
 | `npm run preview` | 本地预览生产构建 |
 | `npm run lint` | 运行 ESLint 检查 |
 | `npm run format` | 使用 Prettier 格式化项目 |
+
+## GitHub Pages Deployment
+
+项目已包含 GitHub Pages 自动部署配置：
+
+- `.github/workflows/deploy.yml`：推送到 `main` 后自动安装依赖、构建并部署 `dist/`。
+- `vite.config.js`：使用 `base: './'`，支持部署到 `https://用户名.github.io/仓库名/` 这类子路径。
+- PWA 相关路径已使用相对路径，`manifest.webmanifest`、`icon.svg` 和 `sw.js` 在 GitHub Pages 下可正常加载。
+
+首次发布步骤：
+
+```bash
+git init
+git add .
+git commit -m "Deploy Aurora Clock to GitHub Pages"
+git branch -M main
+git remote add origin https://github.com/你的用户名/你的仓库名.git
+git push -u origin main
+```
+
+然后在 GitHub 仓库中开启 Pages：
+
+1. 打开仓库 `Settings`。
+2. 进入 `Pages`。
+3. 在 `Build and deployment` 中将 `Source` 设置为 `GitHub Actions`。
+4. 打开 `Actions` 页面，等待 `Deploy to GitHub Pages` 工作流完成。
+5. 访问 Pages 地址：`https://你的用户名.github.io/你的仓库名/`。
+
+后续更新只需要提交并推送到 `main`：
+
+```bash
+git add .
+git commit -m "Update Aurora Clock"
+git push
+```
+
+如果使用个人主页仓库，仓库名应为 `你的用户名.github.io`，访问地址为 `https://你的用户名.github.io/`。
 
 ## Controls
 
@@ -218,6 +253,10 @@ public/
   icon.svg                    PWA 图标
   manifest.webmanifest        PWA manifest
   sw.js                       基础离线缓存 service worker
+.github/
+  workflows/
+    deploy.yml                GitHub Pages 自动部署工作流
+vite.config.js                 Vite 配置，包含 GitHub Pages 相对路径 base
 dist/                         生产构建输出
 ```
 
@@ -235,6 +274,8 @@ dist/                         生产构建输出
 - `src/SpotlightCard.jsx`：负责鼠标聚光交互。
 - `public/manifest.webmanifest`：定义 PWA 安装信息。
 - `public/sw.js`：缓存应用壳，提供基础离线能力。
+- `vite.config.js`：配置 Vite React 插件和相对路径构建。
+- `.github/workflows/deploy.yml`：配置 GitHub Pages 自动部署流程。
 
 ## Tech Stack
 
