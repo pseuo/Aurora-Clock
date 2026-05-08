@@ -1,5 +1,6 @@
 const STATIC_CACHE = 'time-aurora-static-v3';
-const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icon.svg'];
+const SCOPE_URL = new URL(self.registration.scope);
+const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'].map((path) => new URL(path, SCOPE_URL).href);
 
 function isWeatherRequest(request) {
   return new URL(request.url).hostname === 'api.open-meteo.com';
@@ -7,7 +8,8 @@ function isWeatherRequest(request) {
 
 function isStaticAsset(request) {
   const url = new URL(request.url);
-  return url.origin === self.location.origin && (url.pathname.startsWith('/assets/') || APP_SHELL.includes(url.pathname));
+  const scopePath = SCOPE_URL.pathname.endsWith('/') ? SCOPE_URL.pathname : `${SCOPE_URL.pathname}/`;
+  return url.origin === self.location.origin && (url.pathname.startsWith(`${scopePath}assets/`) || APP_SHELL.includes(url.href));
 }
 
 self.addEventListener('install', (event) => {
@@ -48,6 +50,6 @@ self.addEventListener('fetch', (event) => {
   }
 
   event.respondWith(
-    caches.match(event.request).then((cached) => cached ?? fetch(event.request).catch(() => caches.match('/'))),
+    caches.match(event.request).then((cached) => cached ?? fetch(event.request).catch(() => caches.match(new URL('./', SCOPE_URL).href))),
   );
 });

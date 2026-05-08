@@ -2,15 +2,15 @@
   "name": "Aurora Clock｜极光时钟",
   "short_name": "Aurora Clock",
   "description": "一个带自适应主题、世界时钟和极光背景的玻璃拟态时钟。",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": ".",
+  "scope": ".",
   "display": "fullscreen",
   "orientation": "any",
   "background_color": "#020308",
   "theme_color": "#050713",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
