@@ -1,0 +1,95 @@
+.toast-region {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.toast-card {
+  min-width: 180px;
+  max-width: min(340px, calc(100vw - 44px));
+  padding: 12px 15px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 18px;
+  color: rgb(255 255 255 / 0.88);
+  background: linear-gradient(145deg, rgb(9 12 22 / 0.78), rgb(9 12 22 / 0.56));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 24px 70px rgb(0 0 0 / 0.38);
+  backdrop-filter: blur(24px) saturate(150%);
+  font-size: 0.86rem;
+  font-weight: 800;
+  animation: toast-in 220ms ease-out both;
+}
+
+.update-toast {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(420px, calc(100vw - 44px));
+  padding: 10px 12px 10px 15px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 18px;
+  color: rgb(255 255 255 / 0.86);
+  background: linear-gradient(145deg, rgb(9 12 22 / 0.78), rgb(9 12 22 / 0.56));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 24px 70px rgb(0 0 0 / 0.38);
+  backdrop-filter: blur(24px) saturate(150%);
+  animation: toast-in 220ms ease-out both;
+}
+
+.update-toast button {
+  min-height: 30px;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 999px;
+  padding: 0 12px;
+  color: #fff;
+  background: rgb(255 255 255 / 0.08);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+.settings-trigger:focus-visible,
+.panel-action:focus-visible,
+.theme-preview:focus-visible,
+.city-picker button:focus-visible,
+.segmented-slider button:focus-visible {
+  outline: 2px solid rgb(103 255 228 / 0.92);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgb(103 255 228 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.16);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 520px) {
+  .toast-region,
+  .update-toast {
+    right: 16px;
+    bottom: 86px;
+    left: 16px;
+  }
+
+  .update-toast {
+    justify-content: space-between;
+  }
+
+  .toast-card {
+    max-width: none;
+    text-align: center;
+  }
+}

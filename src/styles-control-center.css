@@ -1,0 +1,103 @@
+html::before {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  content: "Aurora Clock";
+  color: #f7f7f8;
+  background: radial-gradient(circle at 50% 30%, rgb(103 255 228 / 0.18), transparent 36%), #020308;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  font-weight: 850;
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  transition: opacity 420ms ease, visibility 420ms ease;
+}
+
+html.app-ready::before {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.control-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 10px;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgb(var(--aurora-a) / 0.1), rgb(var(--aurora-c) / 0.08));
+}
+
+.control-summary span {
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: rgb(255 255 255 / 0.82);
+  background: rgb(255 255 255 / 0.08);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.compact-control {
+  display: grid;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.date-format-switcher {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.shortcut-modal {
+  padding: 12px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 22px;
+  background: rgb(0 0 0 / 0.22);
+}
+
+.shortcut-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  color: rgb(255 255 255 / 0.82);
+}
+
+.shortcut-modal-header button {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 999px;
+  color: inherit;
+  background: rgb(255 255 255 / 0.06);
+  cursor: pointer;
+}
+
+.shortcut-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.shortcut-grid div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: rgb(247 247 248 / 0.58);
+  font-size: 0.82rem;
+}
+
+.shortcut-grid kbd {
+  min-width: 42px;
+  padding: 4px 8px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 8px;
+  color: #fff;
+  background: rgb(255 255 255 / 0.08);
+  text-align: center;
+  font: inherit;
+  font-weight: 900;
+}

@@ -1,0 +1,32 @@
+@media (orientation: landscape) and (max-height: 560px) {
+  .stage {
+    padding: 14px 20px;
+  }
+
+  .clock-glow {
+    width: min(1180px, 92vw);
+  }
+
+  .flip-shell {
+    padding: clamp(18px, 3vw, 30px);
+  }
+
+  .display-clock {
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    margin: 22px 0 18px;
+  }
+
+  .time-separator {
+    display: block;
+    margin-top: -18px;
+  }
+
+  .time-value {
+    font-size: clamp(4.8rem, 13vw, 9rem);
+  }
+
+  .world-clock-row,
+  .glass-meta {
+    display: none;
+  }
+}

@@ -1,0 +1,59 @@
+.electric-border {
+  position: relative;
+  border-radius: 34px;
+  isolation: isolate;
+}
+
+.eb-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.eb-layers {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.eb-stroke,
+.eb-glow-1,
+.eb-glow-2,
+.eb-background-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.eb-stroke {
+  border: var(--eb-border-width) solid var(--electric-border-color);
+  opacity: 0.95;
+}
+
+.eb-glow-1 {
+  border: var(--eb-border-width) solid var(--electric-border-color);
+  filter: blur(10px);
+  opacity: 0.52;
+}
+
+.eb-glow-2 {
+  border: var(--eb-border-width) solid var(--electric-border-color);
+  filter: blur(24px);
+  opacity: 0.28;
+}
+
+.eb-background-glow {
+  background: color-mix(in srgb, var(--electric-border-color) 14%, transparent);
+  filter: blur(28px);
+  opacity: 0.22;
+}
+
+.eb-content {
+  position: relative;
+  z-index: 1;
+  border-radius: inherit;
+}
