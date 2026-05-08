@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Time app icon">
+  <defs>
+    <radialGradient id="bg" cx="34%" cy="22%" r="78%">
+      <stop offset="0" stop-color="#67ffe4"/>
+      <stop offset="0.46" stop-color="#18223f"/>
+      <stop offset="1" stop-color="#050713"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="96" y1="78" x2="420" y2="428" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67ffe4"/>
+      <stop offset="0.48" stop-color="#b7dbff"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="156" fill="none" stroke="url(#ring)" stroke-width="24" opacity="0.9"/>
+  <path d="M256 148v112l78 46" fill="none" stroke="#f7f7f8" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="256" cy="256" r="16" fill="#f7f7f8"/>
+</svg>
