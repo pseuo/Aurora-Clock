@@ -1,6 +1,10 @@
-const STATIC_CACHE = 'time-aurora-static-v3';
+const CACHE_PREFIX = 'aurora-clock';
+const LEGACY_CACHE_PREFIX = 'time-aurora-static-';
+const BUILD_VERSION = '__BUILD_VERSION__';
 const SCOPE_URL = new URL(self.registration.scope);
-const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'].map((path) => new URL(path, SCOPE_URL).href);
+const CACHE_NAME = `${CACHE_PREFIX}-${BUILD_VERSION}`;
+const PRECACHE_ASSETS = /* __PRECACHE_MANIFEST__ */ ['./', './index.html', './manifest.webmanifest', './icon.svg'];
+const APP_SHELL = PRECACHE_ASSETS.map((path) => new URL(path, SCOPE_URL).href);
 
 function isWeatherRequest(request) {
   return new URL(request.url).hostname === 'api.open-meteo.com';
@@ -12,19 +16,39 @@ function isStaticAsset(request) {
   return url.origin === self.location.origin && (url.pathname.startsWith(`${scopePath}assets/`) || APP_SHELL.includes(url.href));
 }
 
+function isDocumentRequest(request) {
+  return request.mode === 'navigate' || request.destination === 'document';
+}
+
+async function cacheResponse(request, response) {
+  if (!response || !response.ok) return response;
+  const cache = await caches.open(CACHE_NAME);
+  await cache.put(request, response.clone());
+  return response;
+}
+
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(STATIC_CACHE).then((cache) => cache.addAll(APP_SHELL)));
-  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    Promise.all([
-      caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== STATIC_CACHE).map((key) => caches.delete(key)))),
-      self.clients.matchAll({ type: 'window' }).then((clients) => clients.forEach((client) => client.postMessage({ type: 'APP_UPDATE_READY' }))),
-    ]),
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    const hadPreviousCache = keys.some((key) => key.startsWith(CACHE_PREFIX) || key.startsWith(LEGACY_CACHE_PREFIX));
+    await Promise.all(
+      keys
+        .filter((key) => (key.startsWith(CACHE_PREFIX) || key.startsWith(LEGACY_CACHE_PREFIX)) && key !== CACHE_NAME)
+        .map((key) => caches.delete(key)),
+    );
+    if (hadPreviousCache) {
+      const clients = await self.clients.matchAll({ type: 'window' });
+      clients.forEach((client) => client.postMessage({ type: 'APP_UPDATE_READY' }));
+    }
+  })());
 });
 
 self.addEventListener('fetch', (event) => {
@@ -35,21 +59,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  if (isDocumentRequest(event.request)) {
+    event.respondWith(
+      fetch(new Request(event.request, { cache: 'no-store' }))
+        .then((response) => cacheResponse(new URL('./index.html', SCOPE_URL).href, response))
+        .catch(() => caches.match(new URL('./index.html', SCOPE_URL).href)),
+    );
+    return;
+  }
+
   if (isStaticAsset(event.request)) {
     event.respondWith(
       caches.match(event.request).then((cached) => {
         if (cached) return cached;
-        return fetch(event.request).then((response) => {
-          const clone = response.clone();
-          caches.open(STATIC_CACHE).then((cache) => cache.put(event.request, clone));
-          return response;
-        });
+        return fetch(event.request).then((response) => cacheResponse(event.request, response));
       }),
     );
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => cached ?? fetch(event.request).catch(() => caches.match(new URL('./', SCOPE_URL).href))),
-  );
+  event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
 });

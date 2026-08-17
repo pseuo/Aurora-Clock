@@ -25,10 +25,14 @@ export function useFullscreenAutoHide() {
 
     window.addEventListener('mousemove', reveal, { passive: true });
     window.addEventListener('touchstart', reveal, { passive: true });
+    window.addEventListener('keydown', reveal);
+    document.addEventListener('focusin', reveal);
     return () => {
       window.clearTimeout(hideTimer);
       window.removeEventListener('mousemove', reveal);
       window.removeEventListener('touchstart', reveal);
+      window.removeEventListener('keydown', reveal);
+      document.removeEventListener('focusin', reveal);
     };
   }, [isFullscreen]);
 

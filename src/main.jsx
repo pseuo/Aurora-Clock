@@ -1,22 +1,13 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Clock } from './Clock.jsx';
-import './styles.css';
-import './styles-polish.css';
-import './styles-control-center.css';
-import './styles-atmosphere.css';
-import './styles-feedback.css';
-import './styles-responsive-extra.css';
+import './tailwind.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Clock />
   </React.StrictMode>
 );
-
-window.setTimeout(() => {
-  document.documentElement.classList.add('app-ready');
-}, 650);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

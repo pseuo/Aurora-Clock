@@ -1,40 +1,48 @@
 # Aurora Clock｜极光时钟
 
-一个基于 React 和 Vite 构建的实时数字时钟。
+一个基于 React 和 Vite 构建的实时数字时钟与桌面时间工具。
 
-项目以大字号时间展示为核心，结合玻璃拟态卡片、动态边框高光、鼠标聚光交互、WebGL Aurora 极光背景、世界时钟、天气氛围和 PWA 能力，适合作为桌面时钟、全屏展示页或可安装的轻量时钟应用。
+项目以大字号时间展示为核心，结合玻璃拟态卡片、动态边框高光、鼠标聚光交互、CSS Aurora 极光背景、世界时钟、天气氛围和 PWA 能力，适合作为桌面时钟、全屏展示页或可安装的轻量时钟应用。
 
 ## Features
 
 - 实时显示本地时间，按秒更新。
 - 支持 12/24 小时制切换，并保存用户偏好。
 - 支持中文和英文界面切换，并保存用户偏好。
-- 显示日期、当前时区缩写和在线状态。
+- 支持完整、简洁、仅星期和隐藏四种日期显示格式。
 - 根据当前时间自动切换 Morning、Day、Evening、Night 四套日夜主题。
 - 支持手动固定主题：Auto、Morning、Day、Evening、Night。
 - Apple glass 风格玻璃卡片和高对比时间排版。
 - 鼠标跟随 spotlight 高光效果。
 - 动态 BorderGlow 边框光效。
-- 基于 `ogl` 的 WebGL Aurora 极光背景。
+- 基于 CSS 多层渐变和动画的 Aurora 极光背景。
 - 支持背景强度：柔和、标准、鲜明。
 - 支持动态/静态极光模式。
-- 支持世界时钟展示和自定义城市选择。
-- 内置城市：北京、东京、伦敦、纽约、洛杉矶、巴黎、悉尼、新加坡。
+- 支持世界时钟展示、自定义城市选择、城市搜索、常用预设、数量限制和拖拽排序。
+- 内置 24 个世界城市，覆盖亚洲、欧洲、美洲、大洋洲和非洲等时区。
+- 内置跨时区会议规划器，可比较两个城市的当地时间和 09:00-18:00 工作时间重叠。
 - 天气氛围默认关闭，用户主动开启后才请求定位。
 - 天气数据来自 Open-Meteo，用于调整背景氛围，不影响核心时钟功能。
+- 定位失败时支持通过城市名称手动设置天气位置。
 - 支持桌面模式，隐藏辅助信息以突出主时钟。
+- 支持标准、纯黑夜间和极简大字三种展示模式，并提供自动位移防烧屏和多屏/横屏布局选项。
 - 支持全屏模式，全屏后控制 UI 自动隐藏，鼠标移动或触摸时恢复。
-- 支持快捷键：`F` 全屏、`T` 切换主题、`L` 切换语言、`H` 切换小时制、`W` 展开或收起世界时钟。
+- 支持倒计时、番茄钟和页面打开期间有效的本地闹钟。
+- 支持导入 ICS 日历文件并显示下一个日历事件。
+- 支持偏好设置 JSON 导出、导入、迁移码复制和恢复默认。
+- 支持快捷键：`F` 全屏、`T` 切换主题、`L` 切换语言、`H` 切换小时制、`W` 展开或收起世界时钟、`?` 打开帮助。
 - 设置面板支持 `Esc` 关闭、点击外部关闭，并在打开时自动聚焦第一个控件。
-- PWA 支持：可安装、全屏显示、基础离线缓存。
+- PWA 支持：安装入口会根据浏览器支持情况显示可用状态，安装后状态会自动同步。
+- PWA 支持全屏显示和基础离线缓存。
 - Service Worker 发现新版本时会提示刷新更新。
 - 增加 Error Boundary，视觉特效出错时不影响主时钟显示。
 - 支持 `prefers-reduced-motion`，在用户开启减少动态时降低动画干扰。
+- 会根据屏幕尺寸、减少动态、节省流量、设备内存和 CPU 线索显示性能提示，帮助选择更省资源的静态极光模式。
 - 已加入系统占用优化，降低长时间运行时的 CPU、GPU 和内存压力。
 
 ## Preview
 
-项目启动后默认展示主时钟、设置入口、日期、时区、天气状态和可选世界时钟。视觉层级由深色背景、WebGL 极光、模糊光斑、网格、玻璃卡片和边框高光共同组成。
+项目启动后默认展示主时钟、设置入口、日期、时区、天气状态和可选世界时钟。视觉层级由深色背景、CSS 极光、模糊光斑、网格、玻璃卡片和边框高光共同组成。设置面板按外观、时间、世界时钟、天气、桌面工具和应用六个分区组织。
 
 ## Getting Started
 
@@ -54,6 +62,12 @@ npm run dev
 
 ```bash
 npm run build
+```
+
+运行测试：
+
+```bash
+npm test
 ```
 
 本地预览生产构建：
@@ -86,9 +100,10 @@ npm.cmd run lint
 | 命令 | 说明 |
 | --- | --- |
 | `npm run dev` | 启动 Vite 开发服务器，并监听 `0.0.0.0` |
-| `npm run build` | 生成生产构建到 `dist/` |
+| `npm run build` | 生成生产构建到 `dist/`，并为 Service Worker 写入预缓存资源和构建版本 |
 | `npm run preview` | 本地预览生产构建 |
 | `npm run lint` | 运行 ESLint 检查 |
+| `npm test` | 使用 Vitest 运行单元测试和组件测试 |
 | `npm run format` | 使用 Prettier 格式化项目 |
 
 ## GitHub Pages Deployment
@@ -145,7 +160,13 @@ git push
 | `背景强度` | 在柔和、标准、鲜明之间调整极光强度 |
 | `极光动态` | 在动态和静态极光之间切换 |
 | `桌面模式` | 隐藏辅助信息，适合投屏或长时间桌面显示 |
-| `世界城市` | 选择需要显示的世界时钟城市 |
+| `日期格式` | 选择完整、简洁、仅星期或隐藏日期 |
+| `世界城市` | 搜索、选择、排序世界时钟城市，并设置显示数量 |
+| `跨时区会议` | 打开会议规划器，比较两个城市的时间和工作时间重叠 |
+| `桌面工具` | 使用倒计时、番茄钟和本地闹钟 |
+| `导入 ICS` | 导入日历文件并在主卡片显示下一个事件 |
+| `偏好迁移` | 导出或导入 JSON，复制迁移码，或恢复默认设置 |
+| `安装应用` | 在浏览器支持安装时打开 PWA 安装提示 |
 
 快捷键：
 
@@ -155,6 +176,7 @@ T = Cycle theme
 L = Toggle language
 H = Toggle 12/24 hour time
 W = Toggle world clocks
+? = Open shortcut help
 Esc = Close settings panel
 ```
 
@@ -176,7 +198,7 @@ Esc = Close settings panel
 ### Layer Structure
 
 - `stage`：深色渐变底色和主题 CSS 变量。
-- `aurora-field`：WebGL Aurora 主极光层。
+- `aurora-field`：CSS Aurora 主极光层。
 - `decor-one`、`decor-two`、`decor-three`：辅助模糊光斑。
 - `decor-grid`：低透明度科技网格。
 - `stage::before`：轻量颗粒纹理。
@@ -186,7 +208,7 @@ Esc = Close settings panel
 
 ## Weather Atmosphere
 
-天气不会在页面加载时自动请求定位。用户点击 `开启天气氛围` 后，应用才会使用浏览器定位，并通过 Open-Meteo 免费接口读取当前温度和天气代码。
+天气不会在页面加载时自动请求定位。用户点击 `开启天气氛围` 后，应用才会使用浏览器定位，并通过 Open-Meteo 免费接口读取当前温度、体感温度、降水和天气代码。
 
 天气只影响背景氛围，不影响核心时钟功能：
 
@@ -196,20 +218,18 @@ Esc = Close settings panel
 - 雾天：提高柔雾感。
 - 雪天：偏冰蓝。
 
-如果用户拒绝定位、浏览器不支持定位或接口失败，页面会显示降级状态，并继续使用默认背景。如果设备离线，天气区域会显示离线模式，核心时钟和 PWA 离线缓存不受影响。
+如果用户拒绝定位、浏览器不支持定位或接口失败，页面会显示降级状态，并提供城市名称搜索作为手动位置入口。应用会保存手动选择的位置。如果设备离线，天气区域会显示离线模式，核心时钟和 PWA 离线缓存不受影响。
 
 ## Performance
 
 项目包含针对长期运行场景的占用优化：
 
 - 缓存 `Intl.DateTimeFormat`，避免每秒重复创建时间格式化器。
-- WebGL Aurora 限制到约 `30FPS`，降低持续 GPU 占用。
-- 页面不可见时跳过 Aurora 渲染，减少后台资源消耗。
-- Aurora 关闭抗锯齿并限制 DPR，降低高分屏设备的像素填充压力。
-- Aurora 颜色转换结果会缓存，避免每帧重复创建颜色对象。
+- CSS Aurora 使用低频动画和多层渐变，降低持续 GPU 占用。
 - 鼠标 spotlight 和 BorderGlow 样式更新合并到 `requestAnimationFrame`，减少高频 DOM 写入。
 - 全屏自动隐藏 UI 避免鼠标移动时重复触发无效 React 状态更新。
 - 视觉特效通过 Error Boundary 降级，特效失败不影响主时钟可用性。
+- 小屏幕、减少动态、节省流量或低性能设备会显示性能提示；可手动将极光切换为静态以进一步降低资源占用。
 
 如果需要进一步降低占用，可以在设置面板中将 `极光动态` 切换为静态，或将 `背景强度` 调整为柔和。
 
@@ -221,40 +241,44 @@ Esc = Close settings panel
 - `public/sw.js`
 - `public/icon.svg`
 
-在支持的浏览器中，可以将页面安装为桌面应用。PWA 使用 `fullscreen` display mode，适合当作桌面时钟使用。Service Worker 会缓存应用壳，提供基础离线能力，并在发现新版本时提示刷新更新。
+在支持的浏览器中，可以将页面安装为桌面应用。PWA 使用 `fullscreen` display mode，适合当作桌面时钟使用。每次 `npm run build` 会根据当前构建产物生成预缓存列表。Service Worker 会缓存应用壳，提供基础离线能力，并在发现新版本时提示刷新更新。
 
 ## Project Structure
 
 ```text
 src/
   main.jsx                    React 入口和 service worker 注册
-  Clock.jsx                   时钟主组件、时间计算和页面组合
+  Clock.jsx                   时钟主组件、页面组合和主要交互
+  clockTime.js                时间、日期和世界时钟格式化，并缓存 Intl formatter
   SettingsPanel.jsx           设置面板组件
+  DeskTools.jsx               倒计时、番茄钟和本地闹钟
+  MeetingPlanner.jsx          跨时区会议规划器
+  EventInfoBar.jsx            ICS 日历事件展示
+  calendarIcs.js              ICS 文件解析
   WeatherStatus.jsx           天气状态组件
   WorldClocks.jsx             世界时钟组件
   ErrorBoundary.jsx           视觉特效错误边界
   clockConfig.js              主题、语言、天气、城市和 Aurora 配置
-  styles.css                  全局布局、背景、玻璃卡片和响应式样式
-  styles-polish.css           视觉细节增强
-  styles-control-center.css   设置面板样式
-  styles-atmosphere.css       天气氛围样式
-  styles-feedback.css         Toast 和更新提示样式
-  styles-responsive-extra.css 移动端和窄屏补充样式
+  tailwind.css                Tailwind 主题、字体、动画和全局基础样式
   BorderGlow.jsx              动态边框高光组件
-  BorderGlow.css              边框高光样式
   SpotlightCard.jsx           鼠标聚光卡片组件
-  SpotlightCard.css           聚光卡片样式
   reactbits/
-    Aurora.jsx                基于 ogl 的 WebGL Aurora 组件
-    Aurora.css                Aurora 容器样式
+    Aurora.jsx                基于 CSS 的 Aurora 背景组件
   hooks/
+    useAppLifecycle.js        在线状态、PWA 安装提示和应用更新状态
     usePreferences.js         集中偏好存储
     useWeather.js             天气定位和 Open-Meteo 请求
     useFullscreenAutoHide.js  全屏自动隐藏 UI
+  burnInShift.js              自动位移防烧屏计算
+  meetingOverlap.js           跨时区工作时间重叠计算
 public/
   icon.svg                    PWA 图标
   manifest.webmanifest        PWA manifest
   sw.js                       基础离线缓存 service worker
+scripts/
+  prepare-sw.mjs              根据构建产物生成 Service Worker 预缓存列表
+test/
+  setup.js                    Vitest 和 Testing Library 测试初始化
 .github/
   workflows/
     deploy.yml                GitHub Pages 自动部署工作流
@@ -264,14 +288,20 @@ dist/                         生产构建输出
 
 ## Key Files
 
-- `src/Clock.jsx`：负责时钟页面组合、时间计算、主题判断和主要交互。
+- `src/Clock.jsx`：负责时钟页面组合、主题判断、快捷键、日历导入和主要交互。
+- `src/clockTime.js`：负责本地时间、日期和世界时钟的格式化，并复用 `Intl.DateTimeFormat` 实例。
 - `src/clockConfig.js`：负责主题配置、语言文案、世界城市、天气映射和快捷函数。
-- `src/SettingsPanel.jsx`：负责设置面板、快捷键提示、背景强度、天气入口和城市选择。
+- `src/SettingsPanel.jsx`：负责设置面板、视觉、时间、城市、天气、工具、PWA 和偏好迁移设置。
+- `src/DeskTools.jsx`：负责倒计时、番茄钟和当前页面内的本地闹钟。
+- `src/MeetingPlanner.jsx`：负责两个城市的时间和工作时间重叠计算。
+- `src/EventInfoBar.jsx`：负责显示导入的下一个 ICS 事件。
+- `src/calendarIcs.js`：负责解析带时区、UTC 和全天事件的 ICS 内容。
 - `src/WeatherStatus.jsx`：负责天气状态展示和图标变化。
 - `src/hooks/usePreferences.js`：负责 `time-preferences` 集中偏好存储。
+- `src/hooks/useAppLifecycle.js`：负责在线状态、PWA 安装提示、安装状态和应用更新事件。
 - `src/hooks/useWeather.js`：负责用户主动开启后的定位和天气请求。
 - `src/hooks/useFullscreenAutoHide.js`：负责全屏模式 UI 自动隐藏。
-- `src/reactbits/Aurora.jsx`：负责 WebGL shader 极光背景。
+- `src/reactbits/Aurora.jsx`：负责 CSS Aurora 背景层。
 - `src/BorderGlow.jsx`：负责时钟卡片边框光效。
 - `src/SpotlightCard.jsx`：负责鼠标聚光交互。
 - `public/manifest.webmanifest`：定义 PWA 安装信息。
@@ -283,17 +313,17 @@ dist/                         生产构建输出
 
 - React
 - Vite
-- OGL
 - Lucide React
-- CSS custom properties
+- CSS custom properties and animations
+- Vitest
 - Service Worker
 
 ## Customization
 
 修改日夜主题和极光配色：
 
-- React 配置：调整 `src/clockConfig.js` 中的 `glowColors`、`auroraBaseConfig` 和 `intensityConfig`。
-- CSS 变量：调整 `src/styles.css` 中的 `.theme-morning`、`.theme-day`、`.theme-evening`、`.theme-night`。
+- React 配置：调整 `src/clockConfig.js` 中的 `themeVisuals` 和 `intensityConfig`。
+- 全局样式与动画：调整 `src/tailwind.css` 中的 `@theme`、`@keyframes` 和基础样式。
 
 修改世界城市：
 
@@ -323,7 +353,7 @@ dist/                         生产构建输出
 
 ## Design Notes
 
-- 背景不是静态图片，而是由 WebGL、CSS 渐变、光斑、网格和纹理共同组成。
+- 背景不是静态图片，而是由 CSS Aurora 渐变、光斑、网格和纹理共同组成。
 - 主体卡片保持高对比，避免动态背景干扰时间读取。
 - 极光动画速度被刻意压低，目标是“可感知但不抢戏”。
 - 日夜主题通过 CSS 变量和 React 配色配置协同完成，便于后续扩展。
@@ -334,6 +364,7 @@ dist/                         生产构建输出
 当前验证命令已通过：
 
 ```bash
+npm.cmd test
 npm.cmd run lint
 npm.cmd run build
 ```

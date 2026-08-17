@@ -8,6 +8,13 @@ export const intensityOptions = ['calm', 'normal', 'vivid'];
 export const dateFormatOptions = ['full', 'compact', 'weekday', 'hidden'];
 export const auroraMotionOptions = ['dynamic', 'static'];
 export const defaultCityIds = ['tokyo', 'london', 'new-york'];
+export const worldClockLimitOptions = [3, 4, 5, 6, 8, 10];
+export const displayModeOptions = ['balanced', 'black', 'large'];
+export const worldClockPresets = {
+  workday: ['beijing', 'singapore', 'london', 'new-york'],
+  asia: ['beijing', 'tokyo', 'singapore', 'sydney'],
+  travel: ['new-york', 'london', 'paris', 'tokyo', 'sydney'],
+};
 
 export const copy = {
   zh: {
@@ -29,9 +36,13 @@ export const copy = {
     hideWorldClocks: '隐藏世界时钟',
     language: '语言',
     settings: '设置',
+    closeSettings: '关闭设置',
     enableWeather: '开启天气氛围',
     retryWeather: '重试天气',
-    weatherHint: '允许定位后，可根据本地天气微调背景氛围。',
+    weatherAtmosphere: '天气氛围',
+    weatherDescription: '仅在成功获取本地天气后叠加背景效果。',
+    weatherEnabled: '已开启',
+    weatherDisabled: '已关闭',
     weatherLoading: '正在获取天气...',
     installApp: '安装为桌面时钟',
     installUnavailable: '当前浏览器暂不支持安装提示',
@@ -50,6 +61,15 @@ export const copy = {
     weatherUnavailable: '天气不可用',
     weatherOffline: '天气离线',
     locationDenied: '定位关闭',
+    locationFailed: '定位失败',
+    manualLocation: '手动设置城市',
+    manualLocationDescription: '定位不可用时，输入城市以获取天气。',
+    manualLocationPlaceholder: '例如：上海',
+    saveManualLocation: '使用此城市',
+    manualLocationRequired: '请输入城市名称',
+    manualLocationNotFound: '未找到该城市，请检查名称后重试',
+    manualLocationFailed: '暂时无法查找城市，请稍后重试',
+    manualLocationSaved: '已切换到手动城市',
     shortcuts: '快捷键：F 全屏 · T 主题 · L 语言 · H 小时制 · W 世界时钟',
     intensity: '背景强度',
     intensityDescription: '控制极光的亮度、运动和存在感。',
@@ -61,8 +81,22 @@ export const copy = {
     timeDescription: '控制小时制、全屏和世界时钟显示。',
     dateFormat: '日期格式',
     dateFormatLabels: { full: '完整', compact: '简洁', weekday: '星期', hidden: '隐藏' },
-    help: '帮助',
-    shortcutHelp: '快捷键帮助',
+     help: '帮助',
+     shortcutHelp: '快捷键帮助',
+     performance: '性能仪表',
+     performanceDescription: '设备或系统偏好触发了性能提示。选择动态仍可恢复动画，静态模式更省资源。',
+     performanceReasons: {
+       compactScreen: '小屏布局',
+       reducedMotion: '系统减少动态效果',
+       saveData: '已开启省流量模式',
+       lowMemory: '设备内存较低',
+       lowCpu: '设备线程较少',
+     },
+     performanceStatic: '极光已静态化',
+     performanceNormal: '动态效果正常',
+     today: '今天',
+     yesterday: '昨日',
+     tomorrow: '明日',
     shortcutRows: [
       ['F', '全屏'],
       ['T', '切换主题'],
@@ -87,6 +121,15 @@ export const copy = {
       world: '世界时钟已更新',
       aurora: '极光动态',
     },
+    meetingPlanner: '跨时区会议', meetingDescription: '比较两个城市的当地时间与工作时间重叠区。',
+    openMeetingPlanner: '打开会议规划器', closeMeetingPlanner: '关闭会议规划器', citySearch: '搜索城市或 IANA 时区', commonPresets: '常用预设',
+    maxWorldClocks: '最多显示数量', dragToSort: '拖拽排序', noCities: '没有匹配城市',
+    tools: '桌面工具', alarm: '闹钟', countdown: '倒计时', pomodoro: '番茄钟', start: '开始', stop: '停止', reset: '重置',
+    alarmTime: '提醒时间', addAlarm: '添加本地提醒', noAlarms: '暂无提醒', soundHint: '提醒仅在当前页面打开时播放声音。',
+    calendar: '日历事件', importIcs: '导入 ICS', noEvent: '导入 ICS 后显示下一个事件', eventIn: '距离事件',
+    displayModes: '展示模式', displayModeLabels: { balanced: '标准', black: '纯黑夜间', large: '极简大字' }, autoShift: '自动位移防烧屏', wideLayout: '多屏 / 横屏布局',
+    preferences: '偏好迁移', exportPreferences: '导出 JSON', importPreferences: '导入 JSON', migrationCode: '迁移码', copyCode: '复制迁移码', restoreDefaults: '恢复默认',
+    weatherFeels: '体感', precipitation: '降水', updatedAt: '更新', refreshWeather: '刷新天气',
   },
   en: {
     appLabel: 'Aurora Clock',
@@ -107,9 +150,13 @@ export const copy = {
     hideWorldClocks: 'Hide world clocks',
     language: 'Language',
     settings: 'Settings',
+    closeSettings: 'Close settings',
     enableWeather: 'Enable weather atmosphere',
     retryWeather: 'Retry weather',
-    weatherHint: 'Allow location to tune the background with local weather.',
+    weatherAtmosphere: 'Weather atmosphere',
+    weatherDescription: 'Applies a background layer only after local weather is available.',
+    weatherEnabled: 'Enabled',
+    weatherDisabled: 'Disabled',
     weatherLoading: 'Fetching weather...',
     installApp: 'Install desktop clock',
     installUnavailable: 'Install prompt is not available in this browser',
@@ -128,6 +175,15 @@ export const copy = {
     weatherUnavailable: 'Weather unavailable',
     weatherOffline: 'Weather offline',
     locationDenied: 'Location off',
+    locationFailed: 'Location failed',
+    manualLocation: 'Set city manually',
+    manualLocationDescription: 'Enter a city to fetch weather when location is unavailable.',
+    manualLocationPlaceholder: 'For example: Shanghai',
+    saveManualLocation: 'Use this city',
+    manualLocationRequired: 'Enter a city name',
+    manualLocationNotFound: 'City not found. Check the name and try again.',
+    manualLocationFailed: 'City lookup is unavailable. Try again later.',
+    manualLocationSaved: 'Switched to manual city',
     shortcuts: 'Shortcuts: F Fullscreen · T Theme · L Language · H Hour mode · W World clocks',
     intensity: 'Background intensity',
     intensityDescription: 'Controls aurora brightness, motion, and presence.',
@@ -139,8 +195,22 @@ export const copy = {
     timeDescription: 'Control hour mode, fullscreen, and world clocks.',
     dateFormat: 'Date format',
     dateFormatLabels: { full: 'Full', compact: 'Compact', weekday: 'Weekday', hidden: 'Hidden' },
-    help: 'Help',
-    shortcutHelp: 'Shortcut help',
+     help: 'Help',
+     shortcutHelp: 'Shortcut help',
+     performance: 'Performance',
+     performanceDescription: 'Your device or system settings triggered a performance hint. Dynamic remains available; static uses fewer resources.',
+     performanceReasons: {
+       compactScreen: 'compact layout',
+       reducedMotion: 'reduced motion preference',
+       saveData: 'data saver',
+       lowMemory: 'low device memory',
+       lowCpu: 'limited CPU threads',
+     },
+     performanceStatic: 'Aurora static',
+     performanceNormal: 'Dynamic effects normal',
+     today: 'Today',
+     yesterday: 'Yesterday',
+     tomorrow: 'Tomorrow',
     shortcutRows: [
       ['F', 'Fullscreen'],
       ['T', 'Theme'],
@@ -165,6 +235,15 @@ export const copy = {
       world: 'World clocks updated',
       aurora: 'Aurora motion',
     },
+    meetingPlanner: 'Time zone meeting', meetingDescription: 'Compare local times and working-hour overlap for two cities.',
+    openMeetingPlanner: 'Open planner', closeMeetingPlanner: 'Close planner', citySearch: 'Search city or IANA time zone', commonPresets: 'Presets',
+    maxWorldClocks: 'Visible clocks', dragToSort: 'Drag to reorder', noCities: 'No matching cities',
+    tools: 'Desk tools', alarm: 'Alarm', countdown: 'Countdown', pomodoro: 'Pomodoro', start: 'Start', stop: 'Stop', reset: 'Reset',
+    alarmTime: 'Reminder time', addAlarm: 'Add local reminder', noAlarms: 'No reminders', soundHint: 'Sound reminders play while this page is open.',
+    calendar: 'Calendar event', importIcs: 'Import ICS', noEvent: 'Import an ICS file to show the next event', eventIn: 'Event in',
+    displayModes: 'Display modes', displayModeLabels: { balanced: 'Balanced', black: 'Pure black night', large: 'Minimal large type' }, autoShift: 'Auto-shift for burn-in', wideLayout: 'Multi-screen / wide layout',
+    preferences: 'Preference transfer', exportPreferences: 'Export JSON', importPreferences: 'Import JSON', migrationCode: 'Migration code', copyCode: 'Copy code', restoreDefaults: 'Reset defaults',
+    weatherFeels: 'Feels like', precipitation: 'Precipitation', updatedAt: 'Updated', refreshWeather: 'Refresh weather',
   },
 };
 
@@ -177,6 +256,22 @@ export const worldClocks = [
   { id: 'paris', city: { zh: '巴黎', en: 'Paris' }, timeZone: 'Europe/Paris' },
   { id: 'sydney', city: { zh: '悉尼', en: 'Sydney' }, timeZone: 'Australia/Sydney' },
   { id: 'singapore', city: { zh: '新加坡', en: 'Singapore' }, timeZone: 'Asia/Singapore' },
+  { id: 'hong-kong', city: { zh: '香港', en: 'Hong Kong' }, timeZone: 'Asia/Hong_Kong' },
+  { id: 'seoul', city: { zh: '首尔', en: 'Seoul' }, timeZone: 'Asia/Seoul' },
+  { id: 'dubai', city: { zh: '迪拜', en: 'Dubai' }, timeZone: 'Asia/Dubai' },
+  { id: 'mumbai', city: { zh: '孟买', en: 'Mumbai' }, timeZone: 'Asia/Kolkata' },
+  { id: 'bangkok', city: { zh: '曼谷', en: 'Bangkok' }, timeZone: 'Asia/Bangkok' },
+  { id: 'berlin', city: { zh: '柏林', en: 'Berlin' }, timeZone: 'Europe/Berlin' },
+  { id: 'moscow', city: { zh: '莫斯科', en: 'Moscow' }, timeZone: 'Europe/Moscow' },
+  { id: 'honolulu', city: { zh: '檀香山', en: 'Honolulu' }, timeZone: 'Pacific/Honolulu' },
+  { id: 'chicago', city: { zh: '芝加哥', en: 'Chicago' }, timeZone: 'America/Chicago' },
+  { id: 'toronto', city: { zh: '多伦多', en: 'Toronto' }, timeZone: 'America/Toronto' },
+  { id: 'mexico-city', city: { zh: '墨西哥城', en: 'Mexico City' }, timeZone: 'America/Mexico_City' },
+  { id: 'sao-paulo', city: { zh: '圣保罗', en: 'Sao Paulo' }, timeZone: 'America/Sao_Paulo' },
+  { id: 'amsterdam', city: { zh: '阿姆斯特丹', en: 'Amsterdam' }, timeZone: 'Europe/Amsterdam' },
+  { id: 'cairo', city: { zh: '开罗', en: 'Cairo' }, timeZone: 'Africa/Cairo' },
+  { id: 'johannesburg', city: { zh: '约翰内斯堡', en: 'Johannesburg' }, timeZone: 'Africa/Johannesburg' },
+  { id: 'auckland', city: { zh: '奥克兰', en: 'Auckland' }, timeZone: 'Pacific/Auckland' },
 ];
 
 export const weatherCodeMap = [
@@ -185,21 +280,14 @@ export const weatherCodeMap = [
   { codes: [45, 48], labelKey: 'fog', atmosphere: 'fog' },
   { codes: [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82], labelKey: 'rain', atmosphere: 'rain' },
   { codes: [71, 73, 75, 77, 85, 86], labelKey: 'snow', atmosphere: 'snow' },
-  { codes: [95, 96, 99], labelKey: 'storm', atmosphere: 'rain' },
+  { codes: [95, 96, 99], labelKey: 'storm', atmosphere: 'storm' },
 ];
 
-export const glowColors = {
-  morning: ['#ffd69a', '#7ee8ff', '#ba8bff'],
-  day: ['#7ee8ff', '#b7dbff', '#67ffe4'],
-  evening: ['#ff8c66', '#b66cff', '#67ffe4'],
-  night: ['#67ffe4', '#b7dbff', '#8b5cf6'],
-};
-
-export const auroraBaseConfig = {
-  morning: { colorStops: ['#ffd69a', '#7ee8ff', '#ba8bff'], amplitude: 1.25, blend: 0.72 },
-  day: { colorStops: ['#7ee8ff', '#b7dbff', '#67ffe4'], amplitude: 1.05, blend: 0.66 },
-  evening: { colorStops: ['#ff8c66', '#b66cff', '#67ffe4'], amplitude: 1.35, blend: 0.74 },
-  night: { colorStops: ['#67ffe4', '#b7dbff', '#8b5cf6'], amplitude: 1.45, blend: 0.78 },
+export const themeVisuals = {
+  morning: { aurora: { colorStops: ['#ffd69a', '#7ee8ff', '#ba8bff'], amplitude: 1.25, blend: 0.72 }, glow: ['#ffd69a', '#7ee8ff', '#ba8bff'] },
+  day: { aurora: { colorStops: ['#7ee8ff', '#b7dbff', '#67ffe4'], amplitude: 1.05, blend: 0.66 }, glow: ['#7ee8ff', '#b7dbff', '#67ffe4'] },
+  evening: { aurora: { colorStops: ['#ff8c66', '#b66cff', '#67ffe4'], amplitude: 1.35, blend: 0.74 }, glow: ['#ff8c66', '#b66cff', '#67ffe4'] },
+  night: { aurora: { colorStops: ['#67ffe4', '#b7dbff', '#8b5cf6'], amplitude: 1.45, blend: 0.78 }, glow: ['#67ffe4', '#b7dbff', '#8b5cf6'] },
 };
 
 export const intensityConfig = {

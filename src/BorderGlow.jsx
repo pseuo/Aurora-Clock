@@ -1,62 +1,23 @@
-import { useRef, useCallback, useEffect } from 'react';
-import './BorderGlow.css';
+import { useCallback, useEffect, useRef } from 'react';
 
-function parseHSL(hslStr) {
-  const match = hslStr.match(/([\d.]+)\s*([\d.]+)%?\s*([\d.]+)%?/);
-  if (!match) return { h: 40, s: 80, l: 80 };
-  return { h: parseFloat(match[1]), s: parseFloat(match[2]), l: parseFloat(match[3]) };
+function clamp(value, minimum, maximum) {
+  return Math.min(Math.max(value, minimum), maximum);
 }
 
-function buildGlowVars(glowColor, intensity) {
-  const { h, s, l } = parseHSL(glowColor);
-  const base = `${h}deg ${s}% ${l}%`;
-  const opacities = [100, 60, 50, 40, 30, 20, 10];
-  const keys = ['', '-60', '-50', '-40', '-30', '-20', '-10'];
-  const vars = {};
-  for (let i = 0; i < opacities.length; i++) {
-    vars[`--glow-color${keys[i]}`] = `hsl(${base} / ${Math.min(opacities[i] * intensity, 100)}%)`;
-  }
-  return vars;
-}
-
-const GRADIENT_POSITIONS = ['80% 55%', '69% 34%', '8% 6%', '41% 38%', '86% 85%', '82% 18%', '51% 4%'];
-const GRADIENT_KEYS = ['--gradient-one', '--gradient-two', '--gradient-three', '--gradient-four', '--gradient-five', '--gradient-six', '--gradient-seven'];
-const COLOR_MAP = [0, 1, 2, 0, 1, 2, 1];
-
-function buildGradientVars(colors) {
-  const vars = {};
-  for (let i = 0; i < 7; i++) {
-    const c = colors[Math.min(COLOR_MAP[i], colors.length - 1)];
-    vars[GRADIENT_KEYS[i]] = `radial-gradient(at ${GRADIENT_POSITIONS[i]}, ${c} 0px, transparent 50%)`;
-  }
-  vars['--gradient-base'] = `linear-gradient(${colors[0]} 0 100%)`;
-  return vars;
-}
-
-function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
-function easeInCubic(x) { return x * x * x; }
-
-function animateValue({ start = 0, end = 100, duration = 1000, delay = 0, ease = easeOutCubic, onUpdate, onEnd }) {
-  const t0 = performance.now() + delay;
-  function tick() {
-    const elapsed = performance.now() - t0;
-    const t = Math.min(elapsed / duration, 1);
-    onUpdate(start + (end - start) * ease(t));
-    if (t < 1) requestAnimationFrame(tick);
-    else if (onEnd) onEnd();
-  }
-  setTimeout(() => requestAnimationFrame(tick), delay);
+function colorFromGlowValue(glowColor) {
+  const [hue = '185', saturation = '90', lightness = '78'] = String(glowColor).match(/[\d.]+/g) ?? [];
+  return `hsl(${hue} ${saturation}% ${lightness}%)`;
 }
 
 const BorderGlow = ({
   children,
   className = '',
   edgeSensitivity = 30,
-  glowColor = '40 80 80',
+  glowColor = '185 90 78',
   backgroundColor = '#120F17',
   borderRadius = 28,
   glowRadius = 40,
-  glowIntensity = 1.0,
+  glowIntensity = 1,
   coneSpread = 25,
   animated = false,
   colors = ['#c084fc', '#f472b6', '#38bdf8'],
@@ -66,100 +27,96 @@ const BorderGlow = ({
   const frameRef = useRef(0);
   const pointerRef = useRef({ x: 0, y: 0 });
 
-  useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
+  const updateGlow = useCallback((event) => {
+    if (event.pointerType && event.pointerType !== 'mouse') return;
 
-  const getCenterOfElement = useCallback((el) => {
-    const { width, height } = el.getBoundingClientRect();
-    return [width / 2, height / 2];
-  }, []);
-
-  const getEdgeProximity = useCallback((el, x, y) => {
-    const [cx, cy] = getCenterOfElement(el);
-    const dx = x - cx;
-    const dy = y - cy;
-    let kx = Infinity;
-    let ky = Infinity;
-    if (dx !== 0) kx = cx / Math.abs(dx);
-    if (dy !== 0) ky = cy / Math.abs(dy);
-    return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
-  }, [getCenterOfElement]);
-
-  const getCursorAngle = useCallback((el, x, y) => {
-    const [cx, cy] = getCenterOfElement(el);
-    const dx = x - cx;
-    const dy = y - cy;
-    if (dx === 0 && dy === 0) return 0;
-    const radians = Math.atan2(dy, dx);
-    let degrees = radians * (180 / Math.PI) + 90;
-    if (degrees < 0) degrees += 360;
-    return degrees;
-  }, [getCenterOfElement]);
-
-  const handlePointerMove = useCallback((e) => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    pointerRef.current = { x: e.clientX, y: e.clientY };
+    pointerRef.current = { x: event.clientX, y: event.clientY };
     if (frameRef.current) return;
 
     frameRef.current = requestAnimationFrame(() => {
       frameRef.current = 0;
-      const current = cardRef.current;
-      if (!current) return;
+      const card = cardRef.current;
+      if (!card) return;
 
-      const rect = current.getBoundingClientRect();
-      const x = pointerRef.current.x - rect.left;
-      const y = pointerRef.current.y - rect.top;
-      const edge = getEdgeProximity(current, x, y);
-      const angle = getCursorAngle(current, x, y);
+      const rect = card.getBoundingClientRect();
+      const width = Math.max(rect.width, 1);
+      const height = Math.max(rect.height, 1);
+      const x = clamp(pointerRef.current.x - rect.left, 0, width);
+      const y = clamp(pointerRef.current.y - rect.top, 0, height);
+      const closestEdge = Math.min(x, y, width - x, height - y);
+      const edgeRange = Math.max(24, edgeSensitivity * 2);
+      const proximity = 1 - clamp(closestEdge / edgeRange, 0, 1);
+      const angle = Math.atan2(y - height / 2, x - width / 2) * (180 / Math.PI);
 
-      current.style.setProperty('--edge-proximity', `${(edge * 100).toFixed(3)}`);
-      current.style.setProperty('--cursor-angle', `${angle.toFixed(3)}deg`);
+      card.style.setProperty('--glow-x', `${(x / width) * 100}%`);
+      card.style.setProperty('--glow-y', `${(y / height) * 100}%`);
+      card.style.setProperty('--glow-angle', `${angle + 90}deg`);
+      card.style.setProperty('--glow-strength', `${0.24 + proximity * 0.76}`);
     });
-  }, [getEdgeProximity, getCursorAngle]);
+  }, [edgeSensitivity]);
 
-  useEffect(() => {
-    if (!animated || !cardRef.current) return;
-    const card = cardRef.current;
-    const angleStart = 110;
-    const angleEnd = 465;
-    card.classList.add('sweep-active');
-    card.style.setProperty('--cursor-angle', `${angleStart}deg`);
+  const resetGlow = useCallback(() => {
+    cancelAnimationFrame(frameRef.current);
+    frameRef.current = 0;
+    cardRef.current?.style.setProperty('--glow-strength', '0.24');
+  }, []);
 
-    animateValue({ duration: 500, onUpdate: v => card.style.setProperty('--edge-proximity', v) });
-    animateValue({ ease: easeInCubic, duration: 1500, end: 50, onUpdate: v => {
-      card.style.setProperty('--cursor-angle', `${(angleEnd - angleStart) * (v / 100) + angleStart}deg`);
-    }});
-    animateValue({ ease: easeOutCubic, delay: 1500, duration: 2250, start: 50, end: 100, onUpdate: v => {
-      card.style.setProperty('--cursor-angle', `${(angleEnd - angleStart) * (v / 100) + angleStart}deg`);
-    }});
-    animateValue({ ease: easeInCubic, delay: 2500, duration: 1500, start: 100, end: 0,
-      onUpdate: v => card.style.setProperty('--edge-proximity', v),
-      onEnd: () => card.classList.remove('sweep-active'),
-    });
-  }, [animated]);
+  useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
 
-  const glowVars = buildGlowVars(glowColor, glowIntensity);
+  const fallbackColor = colorFromGlowValue(glowColor);
+  const [first = fallbackColor, second = fallbackColor, third = fallbackColor] = colors;
+  const spread = clamp(coneSpread, 12, 120);
+  const radius = Math.max(glowRadius, 16);
+  const strength = clamp(glowIntensity, 0, 1.5);
+  const panelOpacity = clamp(fillOpacity, 0, 1);
+  const borderGradient = `conic-gradient(from calc(var(--glow-angle) - ${spread / 2}deg) at var(--glow-x) var(--glow-y), ${first} 0deg, ${second} ${spread * 0.42}deg, ${third} ${spread}deg, transparent ${spread * 1.8}deg, transparent 360deg)`;
 
   return (
     <div
       ref={cardRef}
-      onPointerMove={handlePointerMove}
-      className={`border-glow-card ${className}`}
+      className={`relative isolate rounded-[var(--border-radius)] p-px ${className}`}
+      onPointerEnter={updateGlow}
+      onPointerLeave={resetGlow}
+      onPointerMove={updateGlow}
       style={{
-        '--card-bg': backgroundColor,
-        '--edge-sensitivity': edgeSensitivity,
         '--border-radius': `${borderRadius}px`,
-        '--glow-padding': `${glowRadius}px`,
-        '--cone-spread': coneSpread,
-        '--fill-opacity': fillOpacity,
-        ...glowVars,
-        ...buildGradientVars(colors),
+        '--glow-angle': '110deg',
+        '--glow-strength': 0.24,
+        '--glow-x': '50%',
+        '--glow-y': '50%',
       }}
     >
-      <span className="edge-light" />
-      <div className="border-glow-inner">
-        {children}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute z-0 rounded-[var(--border-radius)] blur-2xl transition-opacity duration-300 motion-reduce:transition-none"
+        style={{
+          inset: `-${radius}px`,
+          opacity: `calc(var(--glow-strength) * ${0.34 * strength})`,
+          background: `radial-gradient(circle at var(--glow-x) var(--glow-y), ${second}, transparent 54%)`,
+        }}
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 rounded-[var(--border-radius)] transition-opacity duration-200 motion-reduce:transition-none"
+        style={{
+          opacity: `calc(var(--glow-strength) * ${strength})`,
+          background: borderGradient,
+        }}
+      />
+      {animated && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-px z-0 rounded-[calc(var(--border-radius)-1px)] opacity-40 mix-blend-screen motion-reduce:hidden"
+          style={{
+            background: `linear-gradient(112deg, transparent 36%, ${first} 46%, ${second} 50%, ${third} 54%, transparent 64%)`,
+            backgroundSize: '220% 100%',
+            animation: 'border-glow-sweep 6s linear infinite',
+          }}
+        />
+      )}
+      <div className="relative z-10 h-full min-h-0 overflow-hidden rounded-[calc(var(--border-radius)-1px)]">
+        <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ backgroundColor, opacity: panelOpacity }} />
+        <div className="relative z-10 h-full min-h-0">{children}</div>
       </div>
     </div>
   );
