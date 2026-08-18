@@ -640,6 +640,12 @@ export const SettingsPanel = memo(function SettingsPanel({
             }
           >
             {labels.autoShift}
+            <span
+              className={`grid size-4 place-items-center rounded-full ${autoShift ? "bg-cyan text-night" : "border border-white/20"}`}
+              aria-hidden="true"
+            >
+              {autoShift && <Check size={12} strokeWidth={3} />}
+            </span>
           </button>
           <button
             className={`${action} ${wideLayout ? "border-cyan/40 bg-cyan/10 text-cyan" : ""}`}
@@ -650,6 +656,12 @@ export const SettingsPanel = memo(function SettingsPanel({
             }
           >
             {labels.wideLayout}
+            <span
+              className={`grid size-4 place-items-center rounded-full ${wideLayout ? "bg-cyan text-night" : "border border-white/20"}`}
+              aria-hidden="true"
+            >
+              {wideLayout && <Check size={12} strokeWidth={3} />}
+            </span>
           </button>
         </div>
       </div>

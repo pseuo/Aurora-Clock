@@ -52,8 +52,16 @@ function TestPanel({
     paused: true,
     remainingSeconds: 5 * 60,
   });
+  const [panelPreferences, setPanelPreferences] = useState(preferences);
   const handlePreferenceChange = (changes, ...args) => {
     if (changes.data?.countdown) setCountdown(changes.data.countdown);
+    setPanelPreferences((current) => ({
+      ...current,
+      ...changes,
+      display: { ...current.display, ...changes.display },
+      visual: { ...current.visual, ...changes.visual },
+      data: { ...current.data, ...changes.data },
+    }));
     onPreferenceChange(changes, ...args);
   };
   return (
@@ -71,8 +79,8 @@ function TestPanel({
       performanceMode={performanceMode}
       performanceReasons={performanceReasons}
       preferences={{
-        ...preferences,
-        data: { countdown, weatherEnabled },
+        ...panelPreferences,
+        data: { ...panelPreferences.data, countdown, weatherEnabled },
       }}
       pwaInstallStatus="installAvailable"
       weather={weather}
@@ -96,6 +104,24 @@ describe("SettingsPanel", () => {
       { visual: { desktopMode: true } },
       "Desktop mode enabled",
     );
+  });
+
+  it("shows selected states for burn-in protection and wide layout", async () => {
+    render(<TestPanel />);
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+
+    const autoShift = screen.getByRole("button", {
+      name: "Auto-shift for burn-in",
+    });
+    const wideLayout = screen.getByRole("button", {
+      name: "Multi-screen / wide layout",
+    });
+
+    expect(autoShift).toHaveAttribute("aria-pressed", "true");
+    expect(autoShift).toHaveClass("bg-cyan/10");
+    fireEvent.click(wideLayout);
+    expect(wideLayout).toHaveAttribute("aria-pressed", "true");
+    expect(wideLayout).toHaveClass("bg-cyan/10");
   });
 
   it("offers to hide world clocks when they are visible", async () => {
