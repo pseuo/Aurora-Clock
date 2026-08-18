@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from "react";
 
 function clamp(value, minimum, maximum) {
   return Math.min(Math.max(value, minimum), maximum);
@@ -6,8 +6,8 @@ function clamp(value, minimum, maximum) {
 
 const SpotlightCard = ({
   children,
-  className = '',
-  spotlightColor = 'rgba(255, 255, 255, 0.25)',
+  className = "",
+  spotlightColor = "rgba(255, 255, 255, 0.25)",
   style,
   onPointerEnter,
   onPointerLeave,
@@ -19,7 +19,7 @@ const SpotlightCard = ({
   const pointerRef = useRef({ x: 0, y: 0 });
 
   const updateSpotlight = useCallback((event) => {
-    if (event.pointerType && event.pointerType !== 'mouse') return;
+    if (event.pointerType && event.pointerType !== "mouse") return;
 
     pointerRef.current = { x: event.clientX, y: event.clientY };
     if (frameRef.current) return;
@@ -30,37 +30,60 @@ const SpotlightCard = ({
       if (!card) return;
 
       const rect = card.getBoundingClientRect();
-      const x = clamp(pointerRef.current.x - rect.left, 0, Math.max(rect.width, 1));
-      const y = clamp(pointerRef.current.y - rect.top, 0, Math.max(rect.height, 1));
+      const x = clamp(
+        pointerRef.current.x - rect.left,
+        0,
+        Math.max(rect.width, 1),
+      );
+      const y = clamp(
+        pointerRef.current.y - rect.top,
+        0,
+        Math.max(rect.height, 1),
+      );
 
-      card.style.setProperty('--spotlight-x', `${(x / Math.max(rect.width, 1)) * 100}%`);
-      card.style.setProperty('--spotlight-y', `${(y / Math.max(rect.height, 1)) * 100}%`);
-      card.style.setProperty('--spotlight-opacity', '1');
+      card.style.setProperty(
+        "--spotlight-x",
+        `${(x / Math.max(rect.width, 1)) * 100}%`,
+      );
+      card.style.setProperty(
+        "--spotlight-y",
+        `${(y / Math.max(rect.height, 1)) * 100}%`,
+      );
+      card.style.setProperty("--spotlight-opacity", "1");
     });
   }, []);
 
   const resetSpotlight = useCallback(() => {
     cancelAnimationFrame(frameRef.current);
     frameRef.current = 0;
-    cardRef.current?.style.setProperty('--spotlight-opacity', '0');
+    cardRef.current?.style.setProperty("--spotlight-opacity", "0");
   }, []);
 
   useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
 
-  const handlePointerEnter = useCallback((event) => {
-    onPointerEnter?.(event);
-    updateSpotlight(event);
-  }, [onPointerEnter, updateSpotlight]);
+  const handlePointerEnter = useCallback(
+    (event) => {
+      onPointerEnter?.(event);
+      updateSpotlight(event);
+    },
+    [onPointerEnter, updateSpotlight],
+  );
 
-  const handlePointerLeave = useCallback((event) => {
-    onPointerLeave?.(event);
-    resetSpotlight();
-  }, [onPointerLeave, resetSpotlight]);
+  const handlePointerLeave = useCallback(
+    (event) => {
+      onPointerLeave?.(event);
+      resetSpotlight();
+    },
+    [onPointerLeave, resetSpotlight],
+  );
 
-  const handlePointerMove = useCallback((event) => {
-    onPointerMove?.(event);
-    updateSpotlight(event);
-  }, [onPointerMove, updateSpotlight]);
+  const handlePointerMove = useCallback(
+    (event) => {
+      onPointerMove?.(event);
+      updateSpotlight(event);
+    },
+    [onPointerMove, updateSpotlight],
+  );
 
   return (
     <div
@@ -71,9 +94,9 @@ const SpotlightCard = ({
       onPointerLeave={handlePointerLeave}
       onPointerMove={handlePointerMove}
       style={{
-        '--spotlight-x': '50%',
-        '--spotlight-y': '50%',
-        '--spotlight-opacity': 0,
+        "--spotlight-x": "50%",
+        "--spotlight-y": "50%",
+        "--spotlight-opacity": 0,
         ...style,
       }}
     >

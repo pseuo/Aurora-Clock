@@ -1,32 +1,34 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { parseIcs } from './calendarIcs.js';
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { IcsImportError, parseIcs, parseIcsEvents } from "./calendarIcs.js";
 
 afterEach(() => {
   vi.useRealTimers();
 });
 
-describe('parseIcs', () => {
-  it('unfolds content lines and interprets TZID date-times', () => {
+describe("parseIcs", () => {
+  it("unfolds content lines and interprets TZID date-times", () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-08-17T12:00:00Z'));
+    vi.setSystemTime(new Date("2026-08-17T12:00:00Z"));
 
-    const event = parseIcs([
-      'BEGIN:VCALENDAR',
-      'BEGIN:VEVENT',
-      'SUMMARY:Design ',
-      ' review',
-      'DTSTART;TZID=America/New_York:20260817T093000',
-      'DTEND;TZID=America/New_York:20260817T103000',
-      'END:VEVENT',
-      'END:VCALENDAR',
-    ].join('\r\n'));
+    const event = parseIcs(
+      [
+        "BEGIN:VCALENDAR",
+        "BEGIN:VEVENT",
+        "SUMMARY:Design ",
+        " review",
+        "DTSTART;TZID=America/New_York:20260817T093000",
+        "DTEND;TZID=America/New_York:20260817T103000",
+        "END:VEVENT",
+        "END:VCALENDAR",
+      ].join("\r\n"),
+    );
 
-    expect(event).toMatchObject({ title: 'Design review' });
-    expect(event.start.toISOString()).toBe('2026-08-17T13:30:00.000Z');
-    expect(event.end.toISOString()).toBe('2026-08-17T14:30:00.000Z');
+    expect(event).toMatchObject({ title: "Design review" });
+    expect(event.start.toISOString()).toBe("2026-08-17T13:30:00.000Z");
+    expect(event.end.toISOString()).toBe("2026-08-17T14:30:00.000Z");
   });
 
-  it('supports all-day DTSTART values', () => {
+  it("supports all-day DTSTART values", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 7, 17, 12));
 
@@ -42,9 +44,9 @@ END:VCALENDAR`);
     expect(event.end).toEqual(new Date(2026, 7, 19));
   });
 
-  it('unescapes text values in event titles', () => {
+  it("unescapes text values in event titles", () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-08-17T12:00:00Z'));
+    vi.setSystemTime(new Date("2026-08-17T12:00:00Z"));
 
     const event = parseIcs(`BEGIN:VCALENDAR
 BEGIN:VEVENT
@@ -53,12 +55,12 @@ DTSTART:20260817T130000Z
 END:VEVENT
 END:VCALENDAR`);
 
-    expect(event.title).toBe('Meeting, project; planning\nRoom A');
+    expect(event.title).toBe("Meeting, project; planning\nRoom A");
   });
 
-  it('returns the current event and ignores historical events when none remain', () => {
+  it("returns the current event and ignores historical events when none remain", () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-08-17T12:00:00Z'));
+    vi.setSystemTime(new Date("2026-08-17T12:00:00Z"));
 
     const current = parseIcs(`BEGIN:VCALENDAR
 BEGIN:VEVENT
@@ -80,7 +82,38 @@ DTEND:20260817T090000Z
 END:VEVENT
 END:VCALENDAR`);
 
-    expect(current).toMatchObject({ title: 'In progress' });
+    expect(current).toMatchObject({ title: "In progress" });
     expect(history).toBeNull();
+  });
+
+  it("expands upcoming weekly recurrence rules", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-08-17T12:00:00Z"));
+
+    const events = parseIcsEvents(`BEGIN:VCALENDAR
+BEGIN:VEVENT
+SUMMARY:Weekly sync
+DTSTART:20260817T130000Z
+DTEND:20260817T133000Z
+RRULE:FREQ=WEEKLY;COUNT=3
+END:VEVENT
+END:VCALENDAR`);
+
+    expect(events.map((event) => event.start.toISOString())).toEqual([
+      "2026-08-17T13:00:00.000Z",
+      "2026-08-24T13:00:00.000Z",
+      "2026-08-31T13:00:00.000Z",
+    ]);
+  });
+
+  it("rejects malformed dates and non-string import payloads", () => {
+    expect(() => parseIcs(null)).toThrow(IcsImportError);
+    expect(() =>
+      parseIcs(`BEGIN:VCALENDAR
+BEGIN:VEVENT
+DTSTART:20260230
+END:VEVENT
+END:VCALENDAR`),
+    ).toThrow(IcsImportError);
   });
 });

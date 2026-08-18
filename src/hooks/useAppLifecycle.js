@@ -1,7 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
 function isStandalonePwa() {
-  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
 }
 
 export function useAppLifecycle({ installInstalledLabel, onAppInstalled }) {
@@ -13,11 +16,11 @@ export function useAppLifecycle({ installInstalledLabel, onAppInstalled }) {
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
@@ -33,18 +36,22 @@ export function useAppLifecycle({ installInstalledLabel, onAppInstalled }) {
       setIsPwaInstalled(true);
       onAppInstalled(installInstalledLabel);
     };
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
+      window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, [installInstalledLabel, onAppInstalled]);
 
   useEffect(() => {
     const handleAppUpdateReady = () => setUpdateReady(true);
-    window.addEventListener('app-update-ready', handleAppUpdateReady);
-    return () => window.removeEventListener('app-update-ready', handleAppUpdateReady);
+    window.addEventListener("app-update-ready", handleAppUpdateReady);
+    return () =>
+      window.removeEventListener("app-update-ready", handleAppUpdateReady);
   }, []);
 
   const install = useCallback(async () => {
@@ -58,7 +65,11 @@ export function useAppLifecycle({ installInstalledLabel, onAppInstalled }) {
     install,
     isOnline,
     isPwaInstalled,
-    pwaInstallStatus: isPwaInstalled ? 'installInstalled' : installPrompt ? 'installAvailable' : 'installUnsupported',
+    pwaInstallStatus: isPwaInstalled
+      ? "installInstalled"
+      : installPrompt
+        ? "installAvailable"
+        : "installUnsupported",
     updateReady,
   };
 }

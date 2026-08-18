@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component } from "react";
 
 export class ErrorBoundary extends Component {
   constructor(props) {
@@ -11,7 +11,7 @@ export class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error) {
-    console.error('Visual layer failed:', error);
+    console.error("Visual layer failed:", error);
   }
 
   render() {

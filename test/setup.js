@@ -1,9 +1,9 @@
-import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
-import { afterEach } from 'vitest';
+import "@testing-library/jest-dom/vitest";
+import { cleanup } from "@testing-library/react";
+import { afterEach } from "vitest";
 
 const storage = new Map();
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(window, "localStorage", {
   configurable: true,
   value: {
     clear: () => storage.clear(),

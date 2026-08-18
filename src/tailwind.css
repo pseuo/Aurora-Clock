@@ -49,8 +49,11 @@
 }
 
 @theme {
-  --font-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --font-sans:
+    "Noto Sans SC", "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
   --color-ink: #edf5f8;
   --color-dim: #a7b8c4;
   --color-subtle: #8298a8;
@@ -67,41 +70,80 @@
 }
 
 @keyframes digit-pop {
-  from { opacity: 0.45; transform: translateY(0.06em) scale(0.985); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0.45;
+    transform: translateY(0.06em) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes float {
-  to { transform: translate3d(2vw, -2vh, 0) scale(1.08); }
+  to {
+    transform: translate3d(2vw, -2vh, 0) scale(1.08);
+  }
 }
 
 @keyframes sweep {
-  from { transform: translateX(-120%); opacity: 0; }
-  20%, 80% { opacity: 1; }
-  to { transform: translateX(120%); opacity: 0; }
+  from {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
 }
 
 @keyframes border-glow-sweep {
-  from { background-position: 180% 0; }
-  to { background-position: -40% 0; }
+  from {
+    background-position: 180% 0;
+  }
+  to {
+    background-position: -40% 0;
+  }
 }
 
 @keyframes aurora-drift {
-  0% { transform: translate3d(-5%, 2%, 0) rotate(-3deg) scale(1.04); }
-  50% { transform: translate3d(1%, -4%, 0) rotate(1deg) scale(1.12); }
-  100% { transform: translate3d(5%, 3%, 0) rotate(3deg) scale(1.07); }
+  0% {
+    transform: translate3d(-5%, 2%, 0) rotate(-3deg) scale(1.04);
+  }
+  50% {
+    transform: translate3d(1%, -4%, 0) rotate(1deg) scale(1.12);
+  }
+  100% {
+    transform: translate3d(5%, 3%, 0) rotate(3deg) scale(1.07);
+  }
 }
 
 @keyframes aurora-drift-haze {
-  0% { transform: translate3d(4%, -3%, 0) scale(1.02); }
-  50% { transform: translate3d(-3%, 4%, 0) scale(1.1); }
-  100% { transform: translate3d(2%, 1%, 0) scale(1.04); }
+  0% {
+    transform: translate3d(4%, -3%, 0) scale(1.02);
+  }
+  50% {
+    transform: translate3d(-3%, 4%, 0) scale(1.1);
+  }
+  100% {
+    transform: translate3d(2%, 1%, 0) scale(1.04);
+  }
 }
 
 @keyframes aurora-drift-ribbon {
-  0% { transform: translate3d(-8%, 0, 0) skewY(-6deg); }
-  50% { transform: translate3d(4%, 2%, 0) skewY(-2deg); }
-  100% { transform: translate3d(10%, -1%, 0) skewY(-7deg); }
+  0% {
+    transform: translate3d(-8%, 0, 0) skewY(-6deg);
+  }
+  50% {
+    transform: translate3d(4%, 2%, 0) skewY(-2deg);
+  }
+  100% {
+    transform: translate3d(10%, -1%, 0) skewY(-7deg);
+  }
 }
 
 .aurora-drift,
@@ -111,15 +153,18 @@
 }
 
 .aurora-drift {
-  animation: aurora-drift var(--aurora-duration, 22s) ease-in-out infinite alternate;
+  animation: aurora-drift var(--aurora-duration, 22s) ease-in-out infinite
+    alternate;
 }
 
 .aurora-drift-haze {
-  animation: aurora-drift-haze var(--aurora-duration-haze, 40s) ease-in-out infinite alternate;
+  animation: aurora-drift-haze var(--aurora-duration-haze, 40s) ease-in-out
+    infinite alternate;
 }
 
 .aurora-drift-ribbon {
-  animation: aurora-drift-ribbon var(--aurora-duration-ribbons, 38s) ease-in-out infinite alternate;
+  animation: aurora-drift-ribbon var(--aurora-duration-ribbons, 38s) ease-in-out
+    infinite alternate;
 }
 
 @layer base {
@@ -133,7 +178,11 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  *, *::before, *::after { box-sizing: border-box; }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
   body {
     min-width: 320px;
@@ -148,15 +197,25 @@
     background: var(--color-cyan);
   }
 
-  button, input, select, textarea { font: inherit; }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
 
-  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
     outline: 2px solid var(--color-cyan);
     outline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       scroll-behavior: auto !important;
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
